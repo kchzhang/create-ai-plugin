@@ -34,12 +34,14 @@ const ROOT_FILES = [
   'tsconfig.app.json',
   'tsconfig.node.json',
   'postcss-add-important.ts',
+  '.gitignore',
 ]
 
 /** 需要从工程根目录复制的目录 */
 const ROOT_DIRS = [
   'src',
   'public',
+  '.vscode',
 ]
 
 /**
