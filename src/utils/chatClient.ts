@@ -90,6 +90,13 @@ export class ChatClient {
       }
 
       yield { done: true, fullText };
+    } catch (err) {
+      // 主动取消：yield 取消标记后优雅退出
+      if (signal.aborted) {
+        yield { done: true, cancelled: true, fullText };
+        return;
+      }
+      throw err;
     } finally {
       this.abortController = null;
     }

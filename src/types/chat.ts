@@ -11,6 +11,8 @@ export interface ChatChunkData {
   done?: boolean;
   /** 流结束时的完整文本 */
   fullText?: string;
+  /** 流被主动取消 */
+  cancelled?: boolean;
 }
 
 export interface ChatOptions {
