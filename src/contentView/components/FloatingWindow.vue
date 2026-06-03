@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { IconSidebar, IconMinimize, IconMaximize, IconClose, IconResize } from "@/icons";
+import { useDraggable } from "../composables/useDraggable";
+import { useResizable } from "../composables/useResizable";
 
 const props = withDefaults(
   defineProps<{
@@ -50,131 +52,21 @@ onMounted(() => {
   }
 });
 
-// --- 拖拽逻辑 ---
-let dragging = false;
-let dragOffsetX = 0;
-let dragOffsetY = 0;
-
-function onHeaderMouseDown(e: MouseEvent) {
-  if (minimized.value) return;
-  dragging = true;
-  dragOffsetX = e.clientX - posX.value;
-  dragOffsetY = e.clientY - posY.value;
-  e.preventDefault();
-}
-
-function onMouseMove(e: MouseEvent) {
-  if (resizing) {
-    handleResizeMove(e.clientX, e.clientY);
-    return;
-  }
-  if (!dragging) return;
-  let newX = e.clientX - dragOffsetX;
-  let newY = e.clientY - dragOffsetY;
-  // 边界约束
-  newX = Math.max(0, Math.min(newX, window.innerWidth - currentWidth.value));
-  newY = Math.max(0, Math.min(newY, window.innerHeight - 48));
-  posX.value = newX;
-  posY.value = newY;
-}
-
-function onMouseUp() {
-  dragging = false;
-  resizing = false;
-}
-
-// --- 拉伸逻辑 ---
-let resizing = false;
-let resizeStartX = 0;
-let resizeStartY = 0;
-let resizeStartW = 0;
-let resizeStartH = 0;
-
-function onResizeMouseDown(e: MouseEvent) {
-  if (minimized.value) return;
-  e.preventDefault();
-  e.stopPropagation();
-  resizing = true;
-  resizeStartX = e.clientX;
-  resizeStartY = e.clientY;
-  resizeStartW = currentWidth.value;
-  resizeStartH = currentHeight.value;
-}
-
-function onResizeTouchStart(e: TouchEvent) {
-  if (minimized.value) return;
-  e.stopPropagation();
-  const touch = e.touches[0];
-  resizing = true;
-  resizeStartX = touch.clientX;
-  resizeStartY = touch.clientY;
-  resizeStartW = currentWidth.value;
-  resizeStartH = currentHeight.value;
-}
-
-function handleResizeMove(clientX: number, clientY: number) {
-  let newW = resizeStartW + (clientX - resizeStartX);
-  let newH = resizeStartH + (clientY - resizeStartY);
-  // 最小尺寸限制
-  newW = Math.max(props.minWidth, newW);
-  newH = Math.max(props.minHeight, newH);
-  // 边界限制：不超出视口右侧和底部
-  newW = Math.min(newW, window.innerWidth - posX.value);
-  newH = Math.min(newH, window.innerHeight - posY.value);
-  currentWidth.value = newW;
-  currentHeight.value = newH;
-}
-
-function onTouchMove(e: TouchEvent) {
-  if (!resizing) return;
-  const touch = e.touches[0];
-  handleResizeMove(touch.clientX, touch.clientY);
-}
-
-function onTouchEnd() {
-  resizing = false;
-}
-
-// 头部触摸拖拽
-let touchDragging = false;
-let touchDragOffsetX = 0;
-let touchDragOffsetY = 0;
-
-function onHeaderTouchStart(e: TouchEvent) {
-  if (minimized.value) return;
-  const touch = e.touches[0];
-  touchDragging = true;
-  touchDragOffsetX = touch.clientX - posX.value;
-  touchDragOffsetY = touch.clientY - posY.value;
-}
-
-function onHeaderTouchMove(e: TouchEvent) {
-  if (!touchDragging) return;
-  const touch = e.touches[0];
-  let newX = touch.clientX - touchDragOffsetX;
-  let newY = touch.clientY - touchDragOffsetY;
-  newX = Math.max(0, Math.min(newX, window.innerWidth - currentWidth.value));
-  newY = Math.max(0, Math.min(newY, window.innerHeight - 48));
-  posX.value = newX;
-  posY.value = newY;
-}
-
-function onHeaderTouchEnd() {
-  touchDragging = false;
-}
-
-onMounted(() => {
-  document.addEventListener("mousemove", onMouseMove);
-  document.addEventListener("mouseup", onMouseUp);
-  document.addEventListener("touchmove", onTouchMove, { passive: false });
-  document.addEventListener("touchend", onTouchEnd);
+const { onHeaderMouseDown, onHeaderTouchStart, onHeaderTouchMove, onHeaderTouchEnd } = useDraggable({
+  posX,
+  posY,
+  width: currentWidth,
+  disabled: () => minimized.value,
 });
 
-onBeforeUnmount(() => {
-  document.removeEventListener("mousemove", onMouseMove);
-  document.removeEventListener("mouseup", onMouseUp);
-  document.removeEventListener("touchmove", onTouchMove);
-  document.removeEventListener("touchend", onTouchEnd);
+const { onResizeMouseDown, onResizeTouchStart } = useResizable({
+  posX,
+  posY,
+  width: currentWidth,
+  height: currentHeight,
+  minWidth: props.minWidth,
+  minHeight: props.minHeight,
+  disabled: () => minimized.value,
 });
 
 function handleMinimize() {
