@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from "vue";
+import { IconSidebar, IconMinimize, IconMaximize, IconClose, IconResize } from "@/icons";
 
 const props = withDefaults(
   defineProps<{
@@ -197,10 +198,7 @@ function handleReopen() {
     class="fixed right-5 bottom-5 w-10 h-10 rounded-full bg-sky-500 shadow-[0_2px_12px_rgba(14,165,233,0.35)] cursor-pointer flex items-center justify-center z-[2147483647] transition-all duration-200 hover:bg-sky-400 hover:shadow-[0_4px_16px_rgba(14,165,233,0.45)] hover:scale-105"
     @click="handleReopen"
   >
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-      <line x1="9" y1="3" x2="9" y2="21" />
-    </svg>
+    <IconSidebar class="w-[18px] h-[18px] text-white [&>svg]:stroke-white" />
   </div>
 
   <!-- 浮动窗口 -->
@@ -214,12 +212,13 @@ function handleReopen() {
     >
       <span class="text-[13px] font-medium text-gray-700 tracking-wide block leading-11 whitespace-nowrap overflow-hidden text-ellipsis max-w-[280px]">{{ title }}</span>
       <div class="flex items-center gap-0.5">
+        <slot name="header-actions"></slot>
         <button class="inline-flex items-center justify-center w-7 h-7 rounded-md cursor-pointer text-gray-400 transition-colors duration-150 hover:bg-slate-100 hover:text-gray-600" @click.stop="handleMinimize" :title="minimized ? '展开' : '最小化'">
-          <svg v-if="!minimized" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12" /></svg>
-          <svg v-else width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" /><line x1="12" y1="8" x2="12" y2="16" /><line x1="8" y1="12" x2="16" y2="12" /></svg>
+          <IconMinimize v-if="!minimized" class="w-3.5 h-3.5" />
+          <IconMaximize v-else class="w-3.5 h-3.5" />
         </button>
         <button class="inline-flex items-center justify-center w-7 h-7 rounded-md cursor-pointer text-gray-400 transition-colors duration-150 hover:bg-red-50 hover:text-red-500" @click.stop="handleClose" title="关闭">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="6" x2="18" y2="18" /><line x1="18" y1="6" x2="6" y2="18" /></svg>
+          <IconClose class="w-3.5 h-3.5" />
         </button>
       </div>
     </div>
@@ -234,14 +233,7 @@ function handleReopen() {
       @mousedown="onResizeMouseDown"
       @touchstart="onResizeTouchStart"
     >
-      <svg class="text-gray-300 transition-colors duration-150 group-hover:text-sky-400 group-active:text-sky-500" width="10" height="10" viewBox="0 0 10 10" fill="currentColor">
-        <circle cx="8" cy="2" r="1.2" />
-        <circle cx="8" cy="5" r="1.2" />
-        <circle cx="5" cy="5" r="1.2" />
-        <circle cx="8" cy="8" r="1.2" />
-        <circle cx="5" cy="8" r="1.2" />
-        <circle cx="2" cy="8" r="1.2" />
-      </svg>
+      <IconResize class="w-2.5 h-2.5 text-gray-300 transition-colors duration-150 group-hover:text-sky-400 group-active:text-sky-500 [&>svg]:fill-current" />
     </div>
   </div>
 </template>
