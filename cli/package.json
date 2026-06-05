@@ -1,6 +1,6 @@
 {
   "name": "create-ai-plugin",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "CLI tool to scaffold a Chrome Extension project based on Vue 3 + Vite + TypeScript",
   "type": "module",
   "bin": {
