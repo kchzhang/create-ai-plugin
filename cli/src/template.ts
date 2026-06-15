@@ -140,7 +140,7 @@ export async function createTemplateDir(
 ): Promise<string> {
   const tmpDir = path.join(
     process.platform === 'win32' ? process.env.TEMP || '.' : '/tmp',
-    `create-ai-plugin-template-${Date.now()}`
+    `@knoxzhang-create-ai-plugin-template-${Date.now()}`
   )
   await fs.ensureDir(tmpDir)
 

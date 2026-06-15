@@ -32,7 +32,7 @@ export async function initGit(targetDir: string): Promise<void> {
   try {
     await execa('git', ['init'], { cwd: targetDir, stdio: 'pipe' })
     await execa('git', ['add', '.'], { cwd: targetDir, stdio: 'pipe' })
-    await execa('git', ['commit', '-m', 'init: scaffolded with create-ai-plugin'], {
+    await execa('git', ['commit', '-m', 'init: scaffolded with @knoxzhang/create-ai-plugin'], {
       cwd: targetDir,
       stdio: 'pipe',
     })
