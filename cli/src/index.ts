@@ -4,7 +4,7 @@ import pc from 'picocolors'
 import { promptUser } from './prompts.js'
 import { renderDir } from './render.js'
 import { removeInsertScript, removePopup } from './remove.js'
-import { installDependencies, initGit } from './utils.js'
+import { installDependencies } from './utils.js'
 import { createTemplateDir, cleanupTemplateDir } from './template.js'
 
 export async function run(): Promise<void> {
@@ -59,9 +59,6 @@ export async function run(): Promise<void> {
 
   // Install dependencies
   await installDependencies(targetDir, answers.packageManager)
-
-  // Initialize git
-  await initGit(targetDir)
 
   // Success message
   console.log()

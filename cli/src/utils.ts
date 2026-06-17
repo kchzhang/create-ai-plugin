@@ -28,16 +28,4 @@ export async function installDependencies(
   }
 }
 
-export async function initGit(targetDir: string): Promise<void> {
-  try {
-    await execa('git', ['init'], { cwd: targetDir, stdio: 'pipe' })
-    await execa('git', ['add', '.'], { cwd: targetDir, stdio: 'pipe' })
-    await execa('git', ['commit', '-m', 'init: scaffolded with @knoxzhang/create-ai-plugin'], {
-      cwd: targetDir,
-      stdio: 'pipe',
-    })
-    console.log(pc.green('✓ Git repository initialized'))
-  } catch {
-    console.log(pc.yellow('⚠ Git initialization skipped'))
-  }
-}
+
